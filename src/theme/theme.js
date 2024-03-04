@@ -11,6 +11,7 @@ export const COLORS = {
   ratingColor: '#ffa800',
   primaryGreen: '#1dac08',
   primaryRed: '#e20018',
+  primaryBorderColor: '#d2f4fa',
 };
 
 export const FONTS = {

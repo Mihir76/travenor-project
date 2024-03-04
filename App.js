@@ -1,8 +1,14 @@
 import React from 'react';
 import StackNavigation from './src/navigation/StackNavigator';
+import {ModalPortal} from 'react-native-modals';
 
 const App = () => {
-  return <StackNavigation />;
+  return (
+    <>
+      <StackNavigation />
+      <ModalPortal />
+    </>
+  );
 };
 
 export default App;

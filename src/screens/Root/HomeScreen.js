@@ -1,5 +1,5 @@
-import {FlatList, View, Image} from 'react-native';
-import React, {useState} from 'react';
+import {FlatList, View, Image, Text, StatusBar} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {COLORS} from '../../theme/theme';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -14,6 +14,9 @@ import TransferHome from '../Transfer/TransferHome';
 import NeedhelpHome from '../Need help/NeedhelpHome';
 import ErrorLoading from '../../component/Loading/ErrorLoading';
 import Header from '../../component/Root/Header';
+import NetInfo from '@react-native-community/netinfo';
+import NoInternet from '../../component/Root/NoInternet';
+import {useNavigation} from '@react-navigation/native';
 
 const CATEGORIES = [
   {
@@ -79,6 +82,15 @@ const CATEGORIES = [
 ];
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
+  // ------- check for internet connectivity -----------
+  const [isNetConnected, setIsNetConnected] = useState(true);
+  useEffect(() => {
+    NetInfo.addEventListener(state => {
+      setIsNetConnected(state.isConnected);
+    });
+  }, []);
+
   // active-category
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   return (
@@ -97,40 +109,49 @@ const HomeScreen = () => {
           console.log('Left Pressed');
         }}
         rightPressHandler={() => {
-          console.log('Right Pressed');
+          navigation.navigate('Cart');
         }}
       />
-      {/* -------------- different categories --------------- */}
-      <View style={{marginTop: 25, marginHorizontal: 8}}>
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={CATEGORIES}
-          contentContainerStyle={{gap: 10}}
-          renderItem={categoryItem => (
-            <CategoryItem
-              categoryItem={categoryItem.item}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
+
+      {/* conditional rendering  */}
+
+      {isNetConnected ? (
+        <>
+          {/* -------------- different categories --------------- */}
+          <View style={{marginTop: 25, marginHorizontal: 8}}>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={CATEGORIES}
+              contentContainerStyle={{gap: 10}}
+              renderItem={categoryItem => (
+                <CategoryItem
+                  categoryItem={categoryItem.item}
+                  activeCategory={activeCategory}
+                  setActiveCategory={setActiveCategory}
+                />
+              )}
             />
+          </View>
+
+          {/* -------------- different module screens --------------- */}
+
+          {activeCategory === 1 ? (
+            <HotelHome />
+          ) : activeCategory === 2 ? (
+            <FlightHome />
+          ) : activeCategory === 3 ? (
+            <PackageHome />
+          ) : activeCategory === 4 ? (
+            <TransferHome />
+          ) : activeCategory === 5 ? (
+            <NeedhelpHome />
+          ) : (
+            <ErrorLoading />
           )}
-        />
-      </View>
-
-      {/* -------------- different module screens --------------- */}
-
-      {activeCategory === 1 ? (
-        <HotelHome />
-      ) : activeCategory === 2 ? (
-        <FlightHome />
-      ) : activeCategory === 3 ? (
-        <PackageHome />
-      ) : activeCategory === 4 ? (
-        <TransferHome />
-      ) : activeCategory === 5 ? (
-        <NeedhelpHome />
+        </>
       ) : (
-        <ErrorLoading />
+        <NoInternet />
       )}
     </View>
   );
