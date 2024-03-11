@@ -37,7 +37,7 @@ const SplashScreen = () => {
       }}>
       <StatusBar
         backgroundColor={COLORS.primaryColorBlur}
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
       />
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Text>App Logo</Text>

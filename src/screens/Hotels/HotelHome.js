@@ -1,4 +1,11 @@
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  Image,
+} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import InputField from '../../component/hotel/InputField';
@@ -6,6 +13,12 @@ import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
 import CustomBottomModal from '../../component/Root/CustomBottomModal';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
+import {Modal, ModalContent} from 'react-native-modals';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const HotelHome = () => {
   const navigation = useNavigation();
@@ -23,6 +36,66 @@ const HotelHome = () => {
     setDestination(newDestination);
   };
   const [isGuestPicker, setIsGuestPicker] = useState(false);
+  const [isDatePicker, setIsDatePicker] = useState(false);
+  // calendar-picker helper
+  const [isStartDatePicked, setIsStartDatePicked] = useState(false);
+  const datePickedHandler = () => {
+    if (journeyDates.startDate && journeyDates.endDate) {
+      if (journeyDates.startDate <= journeyDates.endDate) {
+        setIsDatePicker(false);
+      } else {
+        setJourneyDates({
+          ...journeyDates,
+          startDate: '',
+          endDate: '',
+        });
+
+        return Alert.alert(
+          'Invalid Dates',
+          'Check-In date must be lesser than Check-Out date',
+        );
+      }
+    } else {
+      if (!journeyDates.startDate && !journeyDates.endDate) {
+        return Alert.alert(
+          'Select Check-In and Check-Out Dates',
+          'Check-In and Check-Out dates must be provided in-order to proceed further',
+        );
+      } else if (!journeyDates.startDate) {
+        return Alert.alert(
+          'Select Check-In Date',
+          'Check-In date must be provided in-order to proceed further',
+        );
+      } else {
+        return Alert.alert(
+          'Select Check-Out Date',
+          'Check-Out date must be provided in-order to proceed further',
+        );
+      }
+    }
+  };
+
+  const HotelSearchHandler = () => {
+    if (!destination) {
+      return Alert.alert(
+        'Select Destination',
+        'Destination must be provided in-order to proceed further',
+      );
+    }
+
+    if (!journeyDates.startDate || !journeyDates.endDate) {
+      return Alert.alert(
+        'Select Check-In and Check-Out Dates',
+        'Check-In and Check-Out dates must be provided in-order to proceed further',
+      );
+    }
+    navigation.navigate('HotelSearchResult', {
+      location: destination,
+      journeyDates: journeyDates,
+      guests: guests,
+    });
+  };
+
   return (
     <>
       <ScrollView style={{margin: 10}} showsVerticalScrollIndicator={false}>
@@ -40,7 +113,7 @@ const HotelHome = () => {
                 updateDestination: updateDestination,
               })
             }
-            title="Destination"
+            title="Where are you going?"
             icon={
               <FontAwesome6Icon
                 name="location-dot"
@@ -69,7 +142,7 @@ const HotelHome = () => {
             }
           />
           <InputField
-            title="Journey Dates"
+            title="Check in - Check out"
             icon={
               <FontAwesome6Icon
                 name="calendar-days"
@@ -77,13 +150,9 @@ const HotelHome = () => {
                 color={COLORS.primaryColor}
               />
             }
-            onPress={() =>
-              setJourneyDates({
-                ...journeyDates,
-                startDate: '12/04/2024',
-                endDate: '14/04/2021',
-              })
-            }
+            onPress={() => {
+              setIsDatePicker(true);
+            }}
             value={
               journeyDates.startDate && journeyDates.endDate ? (
                 <View
@@ -120,7 +189,7 @@ const HotelHome = () => {
                     fontSize: FONTS.mediumText,
                     fontWeight: WEIGHT.mediumText,
                   }}>
-                  Select Your Journey Dates
+                  Choose Your Journey Dates
                 </Text>
               )
             }
@@ -148,6 +217,7 @@ const HotelHome = () => {
           />
 
           <TouchableOpacity
+            onPress={HotelSearchHandler}
             activeOpacity={0.35}
             style={{
               backgroundColor: COLORS.mainButtonColor,
@@ -165,7 +235,7 @@ const HotelHome = () => {
                 fontWeight: WEIGHT.extraInfo,
                 fontFamily: FONT_FAMILY.medium,
               }}>
-              Search
+              Search Your Hotel
             </Text>
           </TouchableOpacity>
         </View>
@@ -326,7 +396,141 @@ const HotelHome = () => {
           </>
         }
         modalHeight={250}
+        onTouchOutside={() => setIsGuestPicker(!isGuestPicker)}
+        onHardwareBackPress={() => setIsGuestPicker(!isGuestPicker)}
       />
+      <Modal
+        visible={isDatePicker}
+        onHardwareBackPress={datePickedHandler}
+        onTouchOutside={datePickedHandler}>
+        <ModalContent style={{width: wp('90%'), height: hp('80%')}}>
+          <Text
+            style={{
+              fontSize: FONTS.extraInfo,
+              fontWeight: WEIGHT.extraInfo,
+              fontFamily: FONT_FAMILY.bold,
+              color: COLORS.primaryColor,
+            }}>
+            Check-In and Check-Out Dates
+          </Text>
+          <Calendar
+            style={{marginTop: 20, borderRadius: 7}}
+            theme={{
+              backgroundColor: '#ffffff',
+              calendarBackground: COLORS.backgroundColor,
+              selectedDayBackgroundColor: COLORS.primaryColor,
+              selectedDayTextColor: '#ffffff',
+              todayTextColor: '#2d4150',
+              dayTextColor: '#2d4150',
+            }}
+            minDate={Date()}
+            markedDates={
+              journeyDates.startDate || journeyDates.endDate
+                ? {
+                    [journeyDates.startDate]: {
+                      selected: true,
+                      marked: true,
+                      dotColor: 'transparent',
+                    },
+                    [journeyDates.endDate]: {
+                      selected: true,
+                      marked: true,
+                      dotColor: 'transparent',
+                    },
+                  }
+                : null
+            }
+            hideExtraDays
+            onDayPress={day => {
+              if (!isStartDatePicked) {
+                setJourneyDates({startDate: day.dateString});
+                setIsStartDatePicked(true);
+              } else {
+                setJourneyDates({...journeyDates, endDate: day.dateString});
+                setIsStartDatePicked(false);
+              }
+            }}
+          />
+
+          <TouchableOpacity
+            onPress={() => {
+              setJourneyDates({...journeyDates, startDate: '', endDate: ''});
+            }}
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              marginVertical: 15,
+            }}>
+            <Text
+              style={{
+                padding: 5,
+                textAlign: 'right',
+                backgroundColor: COLORS.mainButtonColor,
+                borderRadius: 7,
+                color: COLORS.whiteColor,
+                fontSize: FONTS.forgotText,
+                fontWeight: WEIGHT.forgotText,
+                fontFamily: FONT_FAMILY.medium,
+              }}>
+              Clear
+            </Text>
+          </TouchableOpacity>
+          <View
+            style={{
+              marginTop: 10,
+              gap: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: FONTS.extraInfo,
+                fontWeight: WEIGHT.extraInfo,
+                fontFamily: FONT_FAMILY.medium,
+              }}>
+              Check-In Date :{' '}
+              <Text style={{color: COLORS.primaryColor}}>
+                {journeyDates.startDate}
+              </Text>
+            </Text>
+            <Text
+              style={{
+                fontSize: FONTS.extraInfo,
+                fontWeight: WEIGHT.extraInfo,
+                fontFamily: FONT_FAMILY.medium,
+              }}>
+              Check-Out Date :{' '}
+              <Text style={{color: COLORS.primaryColor}}>
+                {journeyDates.endDate}
+              </Text>
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            activeOpacity={0.35}
+            onPress={datePickedHandler}
+            style={{
+              backgroundColor: COLORS.mainButtonColor,
+              paddingVertical: 12,
+              borderRadius: 7,
+              position: 'absolute',
+              bottom: '2%',
+              left: '35%',
+              right: '35%',
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                color: COLORS.whiteColor,
+                fontSize: FONTS.extraInfo,
+                fontWeight: WEIGHT.extraInfo,
+                fontFamily: FONT_FAMILY.medium,
+              }}>
+              Done
+            </Text>
+          </TouchableOpacity>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

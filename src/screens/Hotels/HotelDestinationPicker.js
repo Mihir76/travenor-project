@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -68,7 +68,10 @@ const HotelDestinationPicker = ({route}) => {
   const navigation = useNavigation();
   const updateDestination = route?.params?.updateDestination;
   const [searchedDestination, setSearchedDestination] = useState('');
-
+  const [newData, setNewData] = useState([]);
+  useEffect(() => {
+    setNewData(DESTINATION);
+  }, []);
   return (
     <View
       style={{
@@ -81,7 +84,6 @@ const HotelDestinationPicker = ({route}) => {
       <View
         style={{
           backgroundColor: COLORS.whiteColor,
-          paddingVertical: 4,
           paddingHorizontal: 10,
           borderRadius: 7,
           flexDirection: 'row',
@@ -111,20 +113,30 @@ const HotelDestinationPicker = ({route}) => {
               color: COLORS.primaryColor,
             }}
             value={searchedDestination}
-            onChangeText={text => setSearchedDestination(text)}
+            onChangeText={text => {
+              setSearchedDestination(text);
+              setNewData(
+                DESTINATION.filter(destination =>
+                  destination.name.toLowerCase().includes(text.toLowerCase()),
+                ),
+              );
+            }}
           />
         </View>
         {searchedDestination.length > 0 ? (
           <TouchableOpacity
             activeOpacity={0.35}
-            onPress={() => setSearchedDestination('')}>
+            onPress={() => {
+              setSearchedDestination('');
+              setNewData(DESTINATION);
+            }}>
             <EntypoIcon name="cross" size={24} style={{marginRight: 10}} />
           </TouchableOpacity>
         ) : null}
       </View>
 
       {/* list of destinations  */}
-      <KeyboardAvoidingView style={{marginTop: 15}}>
+      <KeyboardAvoidingView style={{marginTop: 15, flex: 1}}>
         <Text
           style={{
             fontSize: FONTS.appTittle,
@@ -137,9 +149,9 @@ const HotelDestinationPicker = ({route}) => {
 
         <FlatList
           showsVerticalScrollIndicator={false}
-          style={{marginTop: 10}}
+          style={{marginTop: 10, flex: 1}}
           contentContainerStyle={{gap: 5}}
-          data={DESTINATION}
+          data={newData}
           keyExtractor={item => item.id}
           renderItem={destinationItem => (
             <HotelListCard

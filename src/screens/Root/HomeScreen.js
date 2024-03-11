@@ -1,4 +1,4 @@
-import {FlatList, View, Image, Text, StatusBar} from 'react-native';
+import {FlatList, View, StatusBar} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {COLORS} from '../../theme/theme';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
@@ -95,8 +95,12 @@ const HomeScreen = () => {
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   return (
     <View style={{flex: 1, backgroundColor: COLORS.backgroundColor}}>
+      <StatusBar
+        backgroundColor={COLORS.backgroundColor}
+        barStyle={'dark-content'}
+      />
       <Header
-        left={<Image source={require('../../assets/image/menu.png')} />}
+        left={<EntypoIcon name="menu" size={24} color={COLORS.primaryColor} />}
         title="Travenor"
         right={
           <FontAwesome5Icon

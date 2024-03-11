@@ -14,7 +14,7 @@ const InputField = ({title, icon, value, onPress}) => {
         borderWidth: 1.5,
         borderColor: COLORS.primaryBorderColor,
         borderRadius: 8,
-        paddingVertical: 4,
+        paddingBottom: 4,
         paddingLeft: 4,
       }}>
       <View

@@ -6,6 +6,12 @@ import SplashScreen from '../screens/Root/SplashScreen';
 import OnBoardingScreen from '../screens/Root/OnBoardingScreen';
 import CartScreen from '../screens/Carts/CartScreen';
 import HotelDestinationPicker from '../screens/Hotels/HotelDestinationPicker';
+import HotelSearchResult from '../component/hotel/HotelSearchResult';
+import HotelDetailsScreen from '../screens/Hotels/HotelDetailsScreen';
+import BookingFormScreen from '../screens/Root/BookingFormScreen';
+import BookingSuccessfull from '../screens/Root/BookingSuccessfull';
+import PackageSearchScreen from '../screens/Package/PackageSearchScreen';
+import PackageDetailScreen from '../screens/Package/PackageDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +26,15 @@ const StackNavigation = () => {
         <Stack.Screen
           name="HotelDestination"
           component={HotelDestinationPicker}
+        />
+        <Stack.Screen name="HotelSearchResult" component={HotelSearchResult} />
+        <Stack.Screen name="HotelDetails" component={HotelDetailsScreen} />
+        <Stack.Screen name="PackageSearch" component={PackageSearchScreen} />
+        <Stack.Screen name="PackageDetails" component={PackageDetailScreen} />
+        <Stack.Screen name="FormFill" component={BookingFormScreen} />
+        <Stack.Screen
+          name="BookingSuccessFull"
+          component={BookingSuccessfull}
         />
       </Stack.Navigator>
     </NavigationContainer>

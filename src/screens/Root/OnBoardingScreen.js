@@ -1,9 +1,19 @@
 import {Image, StatusBar, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import {useNavigation} from '@react-navigation/native';
 import OcticonsIcons from 'react-native-vector-icons/Octicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  checkMultiple,
+  PERMISSIONS,
+  requestMultiple,
+} from 'react-native-permissions';
+let isLocationGranted;
+let isCameraGranted;
+let isAudioGranted;
+let isMicGranted;
+let requestPermission = [];
 
 const DATA = [
   {
@@ -27,6 +37,52 @@ const DATA = [
 ];
 
 const OnBoardingScreen = () => {
+  // check for user-permissions
+  useEffect(() => {
+    checkMultiple([
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      PERMISSIONS.ANDROID.CAMERA,
+      PERMISSIONS.ANDROID.RECORD_AUDIO,
+      PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+    ])
+      .then(statuses => {
+        isLocationGranted = statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION];
+        isCameraGranted = statuses[PERMISSIONS.ANDROID.CAMERA];
+        isAudioGranted = statuses[PERMISSIONS.ANDROID.RECORD_AUDIO];
+        isMicGranted = statuses[PERMISSIONS.ANDROID.READ_MEDIA_IMAGES];
+
+        if (isLocationGranted !== 'granted') {
+          requestPermission.push(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+        }
+        if (isCameraGranted !== 'granted') {
+          requestPermission.push(PERMISSIONS.ANDROID.CAMERA);
+        }
+        if (isAudioGranted !== 'granted') {
+          requestPermission.push(PERMISSIONS.ANDROID.RECORD_AUDIO);
+        }
+        if (isMicGranted !== 'granted') {
+          requestPermission.push(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
+        }
+
+        if (requestPermission.length > 0) {
+          requestMultiple(requestPermission)
+            .then(statuses => {
+              console.log(
+                statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION],
+                statuses[PERMISSIONS.ANDROID.CAMERA],
+                statuses[PERMISSIONS.ANDROID.RECORD_AUDIO],
+                statuses[PERMISSIONS.ANDROID.READ_MEDIA_IMAGES],
+              );
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
   const navigation = useNavigation();
   const [activeScreen, setActiveScreen] = useState(0);
   const onNextHandler = async () => {
