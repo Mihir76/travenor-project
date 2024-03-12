@@ -160,7 +160,6 @@ const HotelDetailsScreen = ({route}) => {
               <View
                 style={{
                   flex: 1,
-                  borderWidth: 1,
                   justifyContent: 'center',
                 }}>
                 <Image

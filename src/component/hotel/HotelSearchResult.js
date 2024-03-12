@@ -323,11 +323,11 @@ const HotelSearchResult = ({route}) => {
                   </Text>
                 }
                 rightPressHandler={() => {
+                  setHotelData(hotelDataBackUp);
                   setSelectedMinPrice(minPrice);
                   setSelectedMaxPrice(maxPrice);
                   setActiveSortingCategory(0);
                   setIsFilterOpen(!isFilterOpen);
-                  setHotelData(hotelDataBackUp);
                 }}
                 leftPressHandler={onFilterCloseHandler}
               />

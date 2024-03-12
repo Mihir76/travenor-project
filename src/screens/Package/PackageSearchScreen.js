@@ -86,7 +86,7 @@ const PackageSearchScreen = ({route}) => {
       .then(response => {
         ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
         setPackageData(response.data.packages);
-        setPackageDataBackUp(packageDataBackUp, response.data.packages);
+        setPackageDataBackUp(response.data.packages);
         setIsDataLoaded(true);
       })
       .catch(err => {
@@ -271,10 +271,7 @@ const PackageSearchScreen = ({route}) => {
                     .get(`${baseUrl}api/v1/packages/getPackage`)
                     .then(response => {
                       setPackageData(response.data.packages);
-                      setPackageDataBackUp(
-                        packageDataBackUp,
-                        response.data.packages,
-                      );
+                      setPackageDataBackUp(response.data.packages);
                       setIsDataLoaded(true);
                     })
                     .catch(err => {

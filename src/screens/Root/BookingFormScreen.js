@@ -12,6 +12,7 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {useNavigation} from '@react-navigation/native';
 import InputForForm from '../../component/Root/InputForForm';
 import HotelBookingForm from '../../component/hotel/HotelBookingForm';
+import PackageBookingForm from '../../component/package/PackageBookingForm';
 
 const BookingFormScreen = ({route}) => {
   const navigation = useNavigation();
@@ -101,7 +102,22 @@ const BookingFormScreen = ({route}) => {
           }}
         />
       ) : formType === 'Package Booking' ? (
-        <Text>Package Booking Form</Text>
+        <PackageBookingForm
+          data={data}
+          onDeletePressHandler={() => navigation.goBack()}
+          onBookHandler={() => {
+            if (!name) {
+              return Alert.alert('Error', 'Please Fill your Name');
+            }
+            if (!email) {
+              return Alert.alert('Error', 'Please Fill your Email');
+            }
+            if (!contactNumber) {
+              return Alert.alert('Error', 'Please Fill your Contact Number');
+            }
+            navigation.navigate('BookingSuccessFull');
+          }}
+        />
       ) : (
         <Text>Neither Hotel Booking nor Package Booking</Text>
       )}
