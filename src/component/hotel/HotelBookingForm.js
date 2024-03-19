@@ -1,4 +1,4 @@
-import {Text, View, Image, TouchableOpacity} from 'react-native';
+import {Text, View, Image, TouchableOpacity, Dimensions} from 'react-native';
 import React from 'react';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
@@ -7,6 +7,8 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+const deviceWidth = Dimensions.get('window').width;
+
 const HotelBookingForm = ({data, onDeletePressHandler, onBookHandler}) => {
   return (
     <>
@@ -50,7 +52,11 @@ const HotelBookingForm = ({data, onDeletePressHandler, onBookHandler}) => {
           <Image
             resizeMode="cover"
             source={{uri: data?.hotelInfo?.hotelImage}}
-            style={{width: '30%', height: '100%', borderRadius: 7}}
+            style={{
+              width: deviceWidth < 400 ? '20%' : '30%',
+              height: deviceWidth < 400 ? '70%' : '100%',
+              borderRadius: 7,
+            }}
           />
           <View style={{flex: 1, alignSelf: 'flex-start', gap: 3}}>
             <Text
@@ -98,7 +104,11 @@ const HotelBookingForm = ({data, onDeletePressHandler, onBookHandler}) => {
             onPress={onDeletePressHandler}
             activeOpacity={0.35}
             style={{alignSelf: 'flex-start'}}>
-            <AntDesignIcon name="delete" size={24} color={COLORS.primaryRed} />
+            <AntDesignIcon
+              name="delete"
+              size={deviceWidth < 400 ? 20 : 24}
+              color={COLORS.primaryRed}
+            />
           </TouchableOpacity>
         </View>
         <View style={{gap: 3}}>

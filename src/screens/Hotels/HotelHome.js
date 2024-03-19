@@ -1,11 +1,4 @@
-import {
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  Alert,
-  Image,
-} from 'react-native';
+import {ScrollView, Text, TouchableOpacity, View, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import InputField from '../../component/hotel/InputField';

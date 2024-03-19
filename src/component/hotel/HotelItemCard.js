@@ -1,4 +1,4 @@
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity, Dimensions} from 'react-native';
 import React from 'react';
 import {
   widthPercentageToDP as wp,
@@ -8,6 +8,9 @@ import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import IoniconsIcon from 'react-native-vector-icons/Ionicons';
 import {useNavigation} from '@react-navigation/native';
+
+const deviceHeight = Dimensions.get('window').height;
+
 const HotelItemCard = ({hotelItem, guests, journeyDates}) => {
   const navigation = useNavigation();
   return (
@@ -26,7 +29,7 @@ const HotelItemCard = ({hotelItem, guests, journeyDates}) => {
         borderColor: COLORS.primaryBorderColor,
         backgroundColor: COLORS.whiteColor,
         flexDirection: 'row',
-        height: hp('30%'),
+        height: deviceHeight < 800 ? hp('33%') : hp('30%'),
         marginBottom: 10,
         borderRadius: 7,
         overflow: 'hidden',

@@ -2,7 +2,14 @@ import {Text, View, TextInput} from 'react-native';
 import React from 'react';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 
-const InputForForm = ({title, value, setValue, placeholder, maxLength}) => {
+const InputForForm = ({
+  title,
+  value,
+  setValue,
+  placeholder,
+  maxLength,
+  keyboardType,
+}) => {
   return (
     <View style={{gap: 3}}>
       <Text
@@ -31,6 +38,7 @@ const InputForForm = ({title, value, setValue, placeholder, maxLength}) => {
         placeholder={placeholder}
         autoCorrect={false}
         maxLength={maxLength}
+        keyboardType={keyboardType}
       />
     </View>
   );

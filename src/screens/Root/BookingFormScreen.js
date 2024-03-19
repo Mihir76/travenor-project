@@ -81,6 +81,7 @@ const BookingFormScreen = ({route}) => {
             setValue={setContactNumber}
             placeholder="Enter Your Contact Number"
             maxLength={10}
+            keyboardType="number-pad"
           />
         </KeyboardAvoidingView>
       </View>

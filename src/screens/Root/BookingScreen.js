@@ -2,7 +2,6 @@ import {Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {COLORS} from '../../theme/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import CustomBottomModal from '../../component/Root/CustomBottomModal';
 
 const BookingScreen = () => {
   const [isLogin, setIsLogIn] = useState(false);
