@@ -51,10 +51,10 @@ const LogInScreen = () => {
   return (
     <ImageBackground source={require('../../assets/image/background.png')}>
       {/* app-logo */}
-      <View style={{height: hp('30%')}} />
+      <View style={{height: hp('25%')}} />
       <View
         style={{
-          height: hp('70%'),
+          height: hp('75%'),
           backgroundColor: COLORS.primaryColorBlur,
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,

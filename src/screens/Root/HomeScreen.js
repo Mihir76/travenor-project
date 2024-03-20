@@ -1,4 +1,10 @@
-import {FlatList, View, StatusBar} from 'react-native';
+import {
+  FlatList,
+  View,
+  StatusBar,
+  DeviceEventEmitter,
+  Alert,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {COLORS} from '../../theme/theme';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
@@ -17,6 +23,7 @@ import Header from '../../component/Root/Header';
 import NetInfo from '@react-native-community/netinfo';
 import NoInternet from '../../component/Root/NoInternet';
 import {useNavigation} from '@react-navigation/native';
+import {BackHandler} from 'react-native';
 
 const CATEGORIES = [
   {
@@ -82,6 +89,25 @@ const CATEGORIES = [
 ];
 
 const HomeScreen = () => {
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     Alert.alert('Do you want to exit the app?', '', [
+  //       {
+  //         text: 'Exit',
+  //         onPress: () => BackHandler.exitApp(),
+  //         style: 'cancel',
+  //       },
+  //     ]);
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction,
+  //   );
+
+  //   return () => backHandler.remove();
+  // }, []);
   const navigation = useNavigation();
   // ------- check for internet connectivity -----------
   const [isNetConnected, setIsNetConnected] = useState(true);

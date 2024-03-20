@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -20,6 +21,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
 
+const deviceHeight = Dimensions.get('window').height;
 const options = [
   {
     id: 1,
@@ -55,10 +57,10 @@ const SingUpScreen = () => {
   return (
     <ImageBackground source={require('../../assets/image/background.png')}>
       {/* app-logo */}
-      <View style={{height: hp('30%')}} />
+      <View style={{height: deviceHeight < 800 ? hp('25%') : hp('30%')}} />
       <View
         style={{
-          height: hp('70%'),
+          height: deviceHeight < 800 ? hp('75%') : hp('70%'),
           backgroundColor: COLORS.primaryColorBlur,
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,

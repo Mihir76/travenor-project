@@ -71,7 +71,7 @@ const HotelBookingForm = ({data, onDeletePressHandler, onBookHandler}) => {
               {data?.hotelInfo?.hotelName}
             </Text>
             <Text
-              numberOfLines={3}
+              numberOfLines={deviceWidth < 400 ? 2 : 3}
               style={{
                 width: '95%',
                 fontSize: FONTS.placeHolder,

@@ -126,7 +126,6 @@ const HotelDetailsScreen = ({route}) => {
   const hotelItem = route?.params?.hotelItem;
   const guests = route?.params?.guests;
   const journeyDates = route?.params?.journeyDates;
-
   const [isFacilitiesShown, setIsFacilitiesShown] = useState(false);
   const [isAboutHotelShown, setIsAboutHotelShown] = useState(false);
   return (
