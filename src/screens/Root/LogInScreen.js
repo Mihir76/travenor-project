@@ -6,6 +6,8 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
+  Alert,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -18,6 +20,9 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import {baseUrl} from '../../constants/url';
+import {useStore} from '../../../store';
 
 const options = [
   {
@@ -42,11 +47,60 @@ const options = [
   },
 ];
 const LogInScreen = () => {
+  const {setAuthToken, setUserDetails} = useStore();
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+
+  const logInHandler = () => {
+    if (!email || !password) {
+      setIsPressed(false);
+      return Alert.alert('Error', 'Please fill all the fields');
+    }
+    axios
+      .post(`${baseUrl}api/v1/user/logIn`, {
+        email: email,
+        password: password,
+      })
+      .then(response => {
+        if (response.data.success) {
+          setIsPressed(false);
+          ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
+          setAuthToken(response.data.authToken);
+          setUserDetails(response.data?.userDetails);
+          navigation.replace('Bottom');
+          setEmail('');
+          setPassword('');
+        } else {
+          if (response.data.message == 'Please verify your account first') {
+            setIsPressed(false);
+            return Alert.alert(
+              'Verification Required!',
+              response.data.message,
+              [
+                {
+                  text: 'Verify',
+                  onPress: () => {
+                    navigation.navigate('EmailVerification', {email: email});
+                    setEmail('');
+                    setPassword('');
+                  },
+                },
+              ],
+            );
+          } else {
+            setIsPressed(false);
+            return Alert.alert('Error', response.data.message);
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        setIsPressed(false);
+      });
+  };
 
   return (
     <ImageBackground source={require('../../assets/image/background.png')}>
@@ -114,8 +168,8 @@ const LogInScreen = () => {
             <TouchableOpacity
               disabled={isPressed}
               onPress={() => {
-                console.log(email, password);
                 setIsPressed(!isPressed);
+                logInHandler();
               }}
               style={{
                 backgroundColor: isPressed

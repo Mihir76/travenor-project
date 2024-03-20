@@ -30,6 +30,9 @@ const InputFields = ({
           onChangeText={text => setData(text)}
           secureTextEntry={secureTextEntry}
           autoCorrect={false}
+          style={{
+            width: '80%',
+          }}
         />
       </View>
       <TouchableOpacity onPress={onEyePressHandler} style={{marginRight: 10}}>

@@ -9,17 +9,26 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
-  const {authToken, setAuthToken, setUserDetails, userDetails} = useStore();
+  const {authToken, userDetails} = useStore();
   const [loginShowModal, setLoginShowModal] = useState(false);
   const isFocused = useIsFocused();
-  console.log(authToken);
   useEffect(() => {
-    if (authToken.length == 0 && isFocused) setLoginShowModal(true);
+    setTimeout(() => {
+      if (authToken.length == 0 && isFocused) setLoginShowModal(true);
+    }, 500);
   }, [isFocused, authToken]);
   return (
     <View style={{backgroundColor: COLORS.backgroundColor, flex: 1}}>
       {authToken.length > 0 ? (
-        <Text>User is Login</Text>
+        <View
+          style={{
+            backgroundColor: COLORS.whiteColor,
+            height: '30%',
+            width: '100%',
+            elevation: 4,
+          }}>
+          <Text>User is Login</Text>
+        </View>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text

@@ -14,6 +14,8 @@ import PackageSearchScreen from '../screens/Package/PackageSearchScreen';
 import PackageDetailScreen from '../screens/Package/PackageDetailScreen';
 import LogInScreen from '../screens/Root/LogInScreen';
 import SingUpScreen from '../screens/Root/SingUpScreen';
+import EmailVerifyScreen from '../screens/Root/EmailVerifyScreen';
+import CompleteProfileScreen from '../screens/Root/CompleteProfileScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +42,11 @@ const StackNavigation = () => {
         />
         <Stack.Screen name="LogIn" component={LogInScreen} />
         <Stack.Screen name="SingUp" component={SingUpScreen} />
+        <Stack.Screen name="EmailVerification" component={EmailVerifyScreen} />
+        <Stack.Screen
+          name="CompleteProfile"
+          component={CompleteProfileScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
