@@ -218,7 +218,9 @@ const LogInScreen = () => {
 
           {/* forget-password and sing-up */}
           <View style={{marginTop: 25, gap: 10}}>
-            <TouchableOpacity activeOpacity={0.35}>
+            <TouchableOpacity
+              activeOpacity={0.35}
+              onPress={() => navigation.navigate('ForgotPassword')}>
               <Text
                 style={{
                   letterSpacing: 0.5,

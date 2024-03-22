@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import Header from '../../component/Root/Header';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -13,14 +13,23 @@ import {useNavigation} from '@react-navigation/native';
 import InputForForm from '../../component/Root/InputForForm';
 import HotelBookingForm from '../../component/hotel/HotelBookingForm';
 import PackageBookingForm from '../../component/package/PackageBookingForm';
+import {useStore} from '../../../store';
 
 const BookingFormScreen = ({route}) => {
+  const {userDetails, authToken} = useStore();
   const navigation = useNavigation();
   const formType = route?.params?.type;
   const data = route?.params?.data;
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [contactNumber, setContactNumber] = useState('');
+  useEffect(() => {
+    if (authToken) {
+      setName(userDetails?.name);
+      setEmail(userDetails?.email);
+      setContactNumber(userDetails?.phoneNumber);
+    }
+  }, [authToken]);
   return (
     <ScrollView
       style={{

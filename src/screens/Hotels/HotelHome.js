@@ -1,5 +1,13 @@
-import {ScrollView, Text, TouchableOpacity, View, Alert} from 'react-native';
-import React, {useState} from 'react';
+import {
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  FlatList,
+  Image,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {COLORS, FONTS, FONT_FAMILY, WEIGHT} from '../../theme/theme';
 import InputField from '../../component/hotel/InputField';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
@@ -12,8 +20,41 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import axios from 'axios';
+import {baseUrl} from '../../constants/url';
+import ErrorLoading from '../../component/Loading/ErrorLoading';
 
 const HotelHome = () => {
+  const [topDestination, setTopDestination] = useState([]);
+  const [isTopDestinationLoaded, setIsTopDestinationLoaded] = useState(false);
+  useEffect(() => {
+    axios
+      .get(`${baseUrl}api/v1/hotels/hotelCount`)
+      .then(response => {
+        setTopDestination(response.data?.hotelCount);
+        setIsTopDestinationLoaded(true);
+      })
+      .catch(error => {
+        console.log(error);
+        setIsTopDestinationLoaded(true);
+      });
+  }, []);
+
+  const [popularHotel, setPopularHotel] = useState([]);
+  const [isPopularHotelLoaded, setIsPopularHotelLoaded] = useState(false);
+  useEffect(() => {
+    axios
+      .get(`${baseUrl}api/v1/hotels/popularHotel`)
+      .then(response => {
+        setPopularHotel(response.data?.popularHotels);
+        setIsPopularHotelLoaded(true);
+      })
+      .catch(error => {
+        console.log(error);
+        setIsPopularHotelLoaded(true);
+      });
+  }, []);
+
   const navigation = useNavigation();
   const [destination, setDestination] = useState('');
   const [journeyDates, setJourneyDates] = useState({
@@ -231,6 +272,205 @@ const HotelHome = () => {
               Search Your Hotel
             </Text>
           </TouchableOpacity>
+        </View>
+
+        {/* top destinations */}
+        <View
+          style={{
+            marginTop: 15,
+          }}>
+          <Text
+            style={{
+              fontSize: FONTS.appTittle,
+              fontWeight: WEIGHT.appTittle,
+              fontFamily: FONT_FAMILY.bold,
+              color: COLORS.primaryColor,
+            }}>
+            Top Destinations
+          </Text>
+          {isTopDestinationLoaded && topDestination.length > 0 ? (
+            <FlatList
+              style={{marginVertical: 15}}
+              contentContainerStyle={{gap: 10}}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={topDestination}
+              keyExtractor={topDestination => topDestination?.place}
+              renderItem={topDestination => {
+                return (
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    style={{
+                      backgroundColor: COLORS.whiteColor,
+                      borderWidth: 1,
+                      borderColor: COLORS.primaryBorderColor,
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      gap: 3,
+                      paddingBottom: 4,
+                    }}>
+                    <Image
+                      source={{uri: topDestination.item?.image}}
+                      style={{
+                        width: wp('40%'),
+                        height: hp('20%'),
+                        resizeMode: 'cover',
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: FONTS.extraInfo,
+                        fontWeight: WEIGHT.extraInfo,
+                        fontFamily: FONT_FAMILY.medium,
+                        color: COLORS.primaryColor,
+                        textAlign: 'center',
+                      }}>
+                      {topDestination.item?.place}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: FONTS.mediumText,
+                        fontWeight: WEIGHT.mediumText,
+                        fontFamily: FONT_FAMILY.regular,
+                        color: COLORS.blackColor,
+                        textAlign: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontFamily: FONT_FAMILY.bold,
+                          color: COLORS.primaryColor,
+                        }}>
+                        {topDestination.item?.count}{' '}
+                      </Text>
+                      Hotels
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          ) : isTopDestinationLoaded && topDestination.length == 0 ? (
+            <View
+              style={{
+                marginVertical: 25,
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: FONTS.extraInfo,
+                  fontWeight: WEIGHT.extraInfo,
+                  fontFamily: FONT_FAMILY.medium,
+                  color: COLORS.primaryColor,
+                }}>
+                No data found!
+              </Text>
+            </View>
+          ) : (
+            <View style={{marginVertical: 25}}>
+              <ErrorLoading />
+            </View>
+          )}
+        </View>
+
+        {/* popular hotels */}
+        <View
+          style={{
+            marginTop: 5,
+          }}>
+          <Text
+            style={{
+              fontSize: FONTS.appTittle,
+              fontWeight: WEIGHT.appTittle,
+              fontFamily: FONT_FAMILY.bold,
+              color: COLORS.primaryColor,
+            }}>
+            Popular Hotels
+          </Text>
+
+          {isPopularHotelLoaded && popularHotel.length > 0 ? (
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{marginTop: 15}}
+              contentContainerStyle={{gap: 10}}
+              data={popularHotel}
+              keyExtractor={popularHotel => popularHotel?._id}
+              renderItem={popularHotelDetail => {
+                return (
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    style={{
+                      backgroundColor: COLORS.whiteColor,
+                      borderWidth: 1,
+                      borderColor: COLORS.primaryBorderColor,
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      gap: 3,
+                      paddingBottom: 4,
+                    }}>
+                    <Image
+                      style={{
+                        width: wp('45%'),
+                        height: hp('23%'),
+                        resizeMode: 'cover',
+                      }}
+                      source={{uri: popularHotelDetail?.item?.hotelImage}}
+                    />
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                        fontSize: FONTS.extraInfo,
+                        fontWeight: WEIGHT.extraInfo,
+                        fontFamily: FONT_FAMILY.medium,
+                        color: COLORS.primaryColor,
+                        textAlign: 'center',
+                        width: wp('45%'),
+                      }}>
+                      {popularHotelDetail?.item?.hotelName}
+                    </Text>
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                        fontSize: FONTS.mediumText,
+                        fontWeight: WEIGHT.mediumText,
+                        fontFamily: FONT_FAMILY.regular,
+                        color: COLORS.blackColor,
+                        textAlign: 'center',
+                        width: wp('45%'),
+                      }}>
+                      Location{' '}
+                      <Text
+                        style={{
+                          fontFamily: FONT_FAMILY.bold,
+                          color: COLORS.primaryColor,
+                        }}>
+                        {popularHotelDetail?.item?.place}
+                      </Text>
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          ) : isPopularHotelLoaded && popularHotel.length == 0 ? (
+            <View
+              style={{
+                marginVertical: 25,
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: FONTS.extraInfo,
+                  fontWeight: WEIGHT.extraInfo,
+                  fontFamily: FONT_FAMILY.medium,
+                  color: COLORS.primaryColor,
+                }}>
+                No data found!
+              </Text>
+            </View>
+          ) : (
+            <View style={{marginVertical: 25}}>
+              <ErrorLoading />
+            </View>
+          )}
         </View>
       </ScrollView>
       <CustomBottomModal

@@ -8,6 +8,8 @@ import {
   ScrollView,
   ActivityIndicator,
   Dimensions,
+  Alert,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import {
@@ -20,6 +22,8 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import {baseUrl} from '../../constants/url';
 
 const deviceHeight = Dimensions.get('window').height;
 const options = [
@@ -140,8 +144,52 @@ const SingUpScreen = () => {
             <TouchableOpacity
               disabled={isPressed}
               onPress={() => {
-                setIsPressed(!isPressed);
-                console.log(email, password, confirmPassword);
+                if (!email || !password || !confirmPassword) {
+                  return Alert.alert(
+                    'Error',
+                    'Please provide essential information',
+                  );
+                }
+
+                // check for strong password
+                if (password.length < 5) {
+                  return Alert.alert(
+                    'Error',
+                    'Password must be at least 6 characters and it must contain special character (e.g. @ or #)',
+                  );
+                }
+
+                // check if password match or not
+                if (password !== confirmPassword) {
+                  return Alert.alert(
+                    'Error',
+                    'Password and confirm password do not match',
+                  );
+                }
+                // call sing up api
+                setIsPressed(true);
+                axios
+                  .post(`${baseUrl}api/v1/user/singUp`, {
+                    email: email,
+                    password: password,
+                  })
+                  .then(response => {
+                    setIsPressed(false);
+                    if (response.data.success) {
+                      ToastAndroid.show(
+                        response.data.message,
+                        ToastAndroid.SHORT,
+                      );
+                      navigation.navigate('EmailVerification', {email: email});
+                    } else {
+                      console.log(response.data?.error);
+                      return Alert.alert('Error', response.data.message);
+                    }
+                  })
+                  .catch(error => {
+                    setIsPressed(false);
+                    console.log(error);
+                  });
               }}
               style={{
                 backgroundColor: isPressed

@@ -6,6 +6,7 @@ import {
   ToastAndroid,
   TouchableOpacity,
   View,
+  FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useStore} from '../../../store';
@@ -21,8 +22,52 @@ import InputFields from '../../component/Root/InputFields';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import axios from 'axios';
 import {baseUrl} from '../../constants/url';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
+const options = [
+  {
+    id: 1,
+    title: 'Lots of Choices',
+    subTitle: 'There are many choices of trips and interesting events in it.',
+    image: require('../../assets/image/option.png'),
+  },
+  {
+    id: 2,
+    title: 'Professional Guide',
+    subTitle:
+      'While on a vacation you will be guided by our professional guide.',
+    image: require('../../assets/image/guide.jpg'),
+  },
+  {
+    id: 3,
+    title: 'Secure booking Engine',
+    subTitle:
+      'Your data will be securely stored and provides you confidentiality.',
+    image: require('../../assets/image/secure.jpg'),
+  },
+];
 const AccountScreen = () => {
+  useEffect(() => {
+    if (authToken) {
+      axios
+        .post(`${baseUrl}api/v1/user/getUserDetails`, {
+          email: userDetails?.email,
+        })
+        .then(response => {
+          if (response.data.success) {
+            setUserDetails(response.data.userDetails);
+          } else {
+            console.log(response.data.error);
+          }
+        })
+        .catch(error => {
+          console.log(error.message);
+        });
+    }
+  }, [authToken]);
   const navigation = useNavigation();
   const {authToken, userDetails, setUserDetails, setAuthToken} = useStore();
   const [loginShowModal, setLoginShowModal] = useState(false);
@@ -38,7 +83,9 @@ const AccountScreen = () => {
     useState(false);
 
   useEffect(() => {
-    if (authToken.length == 0 && isFocused) setLoginShowModal(true);
+    setTimeout(() => {
+      if (authToken.length == 0 && isFocused) setLoginShowModal(true);
+    }, 2000);
   }, [isFocused, authToken]);
 
   const onClosePasswordResetModal = () => {
@@ -130,7 +177,7 @@ const AccountScreen = () => {
               style={{
                 width: 100,
                 height: 100,
-                resizeMode: 'contain',
+                resizeMode: 'cover',
                 borderRadius: 999,
               }}
             />
@@ -207,6 +254,7 @@ const AccountScreen = () => {
               backgroundColor: COLORS.whiteColor,
             }}>
             <TouchableOpacity
+              onPress={() => navigation.navigate('MyProfile')}
               activeOpacity={0.35}
               style={{
                 flexDirection: 'row',
@@ -316,6 +364,62 @@ const AccountScreen = () => {
                 Log-out
               </Text>
             </TouchableOpacity>
+          </View>
+          <View style={{marginTop: 10, marginHorizontal: 12}}>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              horizontal
+              data={options}
+              style={{marginTop: 35}}
+              keyExtractor={optionData => optionData.id}
+              contentContainerStyle={{columnGap: 15}}
+              renderItem={optionData => {
+                return (
+                  <View
+                    style={{
+                      backgroundColor: 'white',
+                      padding: 10,
+                      height: hp('17.5%'),
+                      width: wp('55%'),
+                      borderRadius: 7,
+                      borderColor: COLORS.primaryBorderColor,
+                      borderWidth: 1,
+                      alignItems: 'center',
+                      gap: 5,
+                    }}>
+                    <Image
+                      source={optionData.item.image}
+                      resizeMode="cover"
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 25,
+                        borderColor: COLORS.primaryBorderColor,
+                        borderWidth: 1,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: FONTS.mediumText,
+                        fontWeight: WEIGHT.mediumText,
+                        color: COLORS.primaryColor,
+                        textAlign: 'center',
+                      }}>
+                      {optionData?.item?.title}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: FONTS.placeHolder,
+                        fontWeight: WEIGHT.placeHolder,
+                        color: COLORS.blackColor,
+                        textAlign: 'center',
+                      }}>
+                      {optionData?.item?.subTitle}
+                    </Text>
+                  </View>
+                );
+              }}
+            />
           </View>
           <CustomBottomModal
             isGuestPicker={isPasswordReset}

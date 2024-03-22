@@ -16,6 +16,8 @@ import LogInScreen from '../screens/Root/LogInScreen';
 import SingUpScreen from '../screens/Root/SingUpScreen';
 import EmailVerifyScreen from '../screens/Root/EmailVerifyScreen';
 import CompleteProfileScreen from '../screens/Root/CompleteProfileScreen';
+import MyProfile from '../screens/Root/MyProfile';
+import ForgotPasswordScreen from '../screens/Root/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,10 +45,12 @@ const StackNavigation = () => {
         <Stack.Screen name="LogIn" component={LogInScreen} />
         <Stack.Screen name="SingUp" component={SingUpScreen} />
         <Stack.Screen name="EmailVerification" component={EmailVerifyScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen
           name="CompleteProfile"
           component={CompleteProfileScreen}
         />
+        <Stack.Screen name="MyProfile" component={MyProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );

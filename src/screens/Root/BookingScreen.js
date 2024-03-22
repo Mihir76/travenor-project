@@ -20,15 +20,13 @@ const BookingScreen = () => {
   return (
     <View style={{backgroundColor: COLORS.backgroundColor, flex: 1}}>
       {authToken.length > 0 ? (
-        <View
-          style={{
-            backgroundColor: COLORS.whiteColor,
-            height: '30%',
-            width: '100%',
-            elevation: 4,
-          }}>
-          <Text>User is Login</Text>
-        </View>
+        <>
+          <Text>Call Api To fetch booking information</Text>
+          <Text>Hotel Booking</Text>
+          <Text>Flight Booking</Text>
+          <Text>Package Booking</Text>
+          <Text>Transfer Booking</Text>
+        </>
       ) : (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
           <Text
